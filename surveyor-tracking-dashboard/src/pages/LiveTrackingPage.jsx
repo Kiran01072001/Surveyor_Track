@@ -15,6 +15,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import SurveyorTable from '../components/SurveyorTable';
 import SurveyorFormModal from '../components/SurveyorFormModal';
 import { Paper, Button, Typography, Box, Card, CardContent, IconButton } from '@mui/material';
+import { Snackbar, Alert } from '@mui/material';
 
 // Configuration matching your backend exactly
 const config = {
@@ -174,13 +175,18 @@ const [mapProps, setMapProps] = useState(null); // This will hold all props for 
   const handleDeleteClick = async (surveyorId) => {
     if (window.confirm('Are you sure you want to delete this surveyor?')) {
       try {
-        // Example delete logic (uncomment and adapt to your API)
-        // const response = await fetch(`http://localhost:3000/api/surveyors/${surveyorId}`, { method: 'DELETE' });
-        // if (!response.ok) throw new Error('Failed to delete');
-        console.log(`Deleted surveyor: ${surveyorId}`);
+        const config = await import('../config').then(module => module.default);
+        const response = await fetch(`${config.backendHost}/api/surveyors/${surveyorId}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) throw new Error('Failed to delete');
+        setSnackbarMsg('✅ Surveyor deleted successfully!');
+        setSnackbarOpen(true);
         loadSurveyors(); // Refresh the list
       } catch (error) {
         console.error('Failed to delete surveyor:', error);
+        setSnackbarMsg('Failed to delete surveyor.');
+        setSnackbarOpen(true);
       }
     }
   };
@@ -296,8 +302,7 @@ const groupedSurveyors = useMemo(() => {
       const filteredSurveyors = data.filter(surveyor => 
         surveyor.id && 
         !surveyor.id.toLowerCase().includes('admin') &&
-        !surveyor.username?.toLowerCase().includes('admin') &&
-        surveyor.id.startsWith('SUR') // Only show surveyors with SUR prefix
+        !surveyor.username?.toLowerCase().includes('admin')
       );
       
       setSurveyors(filteredSurveyors);
@@ -634,7 +639,8 @@ const fetchHistoricalRoute = useCallback(async () => {
         window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
       }
     } else {
-      setError('No location data found for the selected time range');
+      setError(''); // Don't show inline/floating error
+      setWarningOpen(true);
     }
   } catch (error) {
     console.error('Failed to fetch track data:', error);
@@ -680,6 +686,10 @@ const fetchHistoricalRoute = useCallback(async () => {
   };
 
   const { center, positions } = getMapData();
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState('');
+  const [warningOpen, setWarningOpen] = useState(false);
 
   return (
     <div style={{
@@ -900,6 +910,7 @@ const fetchHistoricalRoute = useCallback(async () => {
           >
             📘 Fetch Historical {surveyors.length === 0 ? '(No Surveyors)' : selectedSurveyor ? '(Ready)' : '(Select Surveyor)'}
           </button>
+          {/* Modern error message for no location data */}
 
           <button
             onClick={openSurveyorManagement}
@@ -936,7 +947,6 @@ const fetchHistoricalRoute = useCallback(async () => {
           <span>{connectionStatus === 'Connected' ? '🟢' : '🔴'}</span>
           <span>WS: {connectionStatus}</span>
         </div>
-
         {/* 📊 Surveyor Count Debug */}
         <div style={{
           display: 'flex',
@@ -954,9 +964,8 @@ const fetchHistoricalRoute = useCallback(async () => {
           <span>Surveyors: {surveyors.length}</span>
         </div>
       </div>
-
       {/* Error Display - Floating on Left Side */}
-      {error && (
+      {error && error !== 'No location data found for the selected time range' && (
         <div style={{
           position: 'absolute',
           bottom: '20px',
@@ -985,7 +994,6 @@ const fetchHistoricalRoute = useCallback(async () => {
         zIndex: 1
       }}>
         {/* Map Area - Clean without floating controls */}
-
         <MapContainer
           center={center}
           zoom={13}
@@ -1221,7 +1229,7 @@ const fetchHistoricalRoute = useCallback(async () => {
                 <button
                   onClick={handleAddClick}
                   style={{
-                    background: 'linear-gradient(135deg, #10810, #34d399 100%)',
+                    background: 'linear-gradient(135deg, #1e40af 0%, #10b981 100%)',
                     color: '#fff',
                     border: 'none',
                     borderRadius: '12px',
@@ -1335,6 +1343,26 @@ const fetchHistoricalRoute = useCallback(async () => {
           </div>
         </div>
       )}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarMsg.startsWith('✅') ? 'success' : 'error'} sx={{ width: '100%' }}>
+          {snackbarMsg}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={warningOpen}
+        autoHideDuration={3000}
+        onClose={() => setWarningOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setWarningOpen(false)} severity="warning" sx={{ width: '100%' }}>
+          ⚠️ No location data found for the selected time range
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

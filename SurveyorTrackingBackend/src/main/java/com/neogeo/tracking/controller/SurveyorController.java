@@ -120,4 +120,21 @@ public class SurveyorController {
         boolean isOnline = surveyorService.isSurveyorOnline(id);
         return ResponseEntity.ok(Map.of("online", isOnline));
     }
+
+    @Operation(summary = "Delete surveyor", description = "Deletes a surveyor by ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Surveyor deleted successfully"),
+        @ApiResponse(responseCode = "404", description = "Surveyor not found")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSurveyor(
+            @Parameter(description = "Surveyor ID", required = true)
+            @PathVariable String id) {
+        boolean deleted = surveyorService.deleteSurveyorById(id);
+        if (deleted) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

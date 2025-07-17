@@ -1,53 +1,87 @@
-# Surveyor Tracking Dashboard
+# 🚀 Surveyor Tracking Dashboard
 
-A React frontend for real-time surveyor location tracking and visualization using OpenLayers and live WebSocket updates.
+A modern, beautiful React dashboard for real-time and historical surveyor tracking! 🌍📍
 
-## Features
-- Filter surveyors by city/project
-- Select surveyor and date range to view track history
-- Live tracking toggle (WebSocket/STOMP or REST fallback)
-- Interactive map with OpenStreetMap basemap and surveyor tracks
-- Modern, responsive UI
+---
 
-## Prerequisites
-- Node.js 16+
-- Backend running at `http://localhost:6565` (see SurveyorTrackingBackend)
+## ✨ Features
 
-## Setup
-1. Navigate to `surveyor-tracking-dashboard`.
-2. Install dependencies:
+- 🛰️ **Live Tracking:** See surveyors move in real time on the map
+- 🕰️ **Historical Routes:** Pick any date range to view past movements
+- 🔎 **Advanced Filters:** Filter by surveyor, city, project, and date
+- 🗺️ **Interactive Map:** Powered by Leaflet + OpenStreetMap
+- 👤 **Surveyor Management:** Add, edit, and manage surveyors (with backend)
+- 🔌 **WebSocket Status:** Instantly see if live updates are connected
+- 📱 **Responsive UI:** Works great on desktop and tablets
+
+---
+
+## ⚡ Quick Start
+
+1. **Install dependencies:**
    ```sh
    npm install
    ```
-3. Start the development server:
+2. **Start the app:**
    ```sh
    npm start
    ```
-   The app will open at `http://localhost:3000`.
+   Open [http://localhost:3000](http://localhost:3000) in your browser 🚦
 
-## Configuration
-- Port configuration is centralized in `/deploy/config.sh` (see PORT_CONFIGURATION.md)
-- The React app automatically reads these settings from `src/config.js`
-- Run the port configuration script to change all ports in one place:
-  ```sh
-  ./configure-ports.sh
-  ```
-- Ensure CORS is enabled on the backend for the configured frontend port.
-
-## Usage
-- Use the left panel to filter by city/project, select a surveyor, and pick a date range.
-- Toggle "Enable Live Tracking" for real-time updates.
-- The map on the right displays the surveyor's track and live location.
-
-## Technologies
-- React
-- OpenLayers
-- STOMP over SockJS for WebSocket
-- react-datepicker
-
-## Notes
-- Works with the SurveyorTrackingBackend Spring Boot backend.
-- For live tracking, ensure the backend is running and accessible.
+3. **Backend:**
+   - Requires backend API at `http://localhost:6565` (Spring Boot)
+   - Make sure CORS is enabled for port 3000
 
 ---
-For backend setup, see the `SurveyorTrackingBackend/README.md`.
+
+## 🛠️ Usage
+
+- Use the **filter bar** at the top to select:
+  - 👤 Surveyor
+  - 🏙️ City
+  - 🏗️ Project
+  - 📅 Date range
+- Click **⚡ Start Live Tracking** for real-time, or **📘 Fetch Historical** for past routes
+- The **map** shows the selected surveyor’s path
+- **WebSocket status** (🟢/🔴) shows live connection
+- **Surveyors** button opens management modal (if enabled)
+
+---
+
+## 🗂️ Project Structure
+
+- `src/pages/LiveTrackingPage.jsx` — Main dashboard page
+- `src/components/` — UI components (forms, tables, modals)
+- `src/config.js` — App config (API endpoints)
+- `public/` — Static assets
+
+---
+
+## 🧰 Tech Stack
+
+- ⚛️ React (hooks)
+- 🗺️ Leaflet + react-leaflet
+- 📅 react-datepicker
+- 🎨 @mui/material
+- 🔗 STOMP over SockJS (WebSocket)
+- 🌐 OpenStreetMap
+
+---
+
+## 📦 Scripts
+
+- `npm start` — Start dev server
+- `npm run build` — Production build
+- `npm test` — Run tests
+
+---
+
+## 📝 Notes
+
+- Requires backend API running and accessible
+- For live tracking, backend WebSocket endpoint must be reachable
+- For backend setup, see the backend project’s README
+
+---
+
+💡 **Questions? Feature requests?** Open an issue or contact the maintainer!

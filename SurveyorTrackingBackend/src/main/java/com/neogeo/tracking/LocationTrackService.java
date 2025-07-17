@@ -75,7 +75,6 @@ public class LocationTrackService {
 
     private boolean isValidSurveyor(Surveyor surveyor) {
         return surveyor.getId() != null &&
-               surveyor.getId().startsWith("SUR") &&
                !surveyor.getId().toLowerCase().contains("admin") &&
                (surveyor.getUsername() == null || !surveyor.getUsername().toLowerCase().contains("admin"));
     }

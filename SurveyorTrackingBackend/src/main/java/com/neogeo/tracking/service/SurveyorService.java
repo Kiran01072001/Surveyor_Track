@@ -150,4 +150,17 @@ public class SurveyorService {
         
         return statuses;
     }
+
+    /**
+     * Deletes a surveyor by ID
+     * @param id The ID of the surveyor to delete
+     * @return true if deleted, false if not found
+     */
+    public boolean deleteSurveyorById(String id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }
