@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import SurveyorDashboard from './SurveyorDashboard';
-import SurveyorManagementPage from './pages/SurveyorManagementPage';
+import LiveTrackingPage from './pages/LiveTrackingPage';
 import Login from './components/Login';
 import { initializeOpenTelemetry, getTracingService } from './tracing';
 
@@ -102,12 +101,7 @@ function App() {
             } />
             <Route path="/" element={
               <ProtectedRoute>
-                <SurveyorDashboard user={user} onLogout={handleLogout} />
-              </ProtectedRoute>
-            } />
-            <Route path="/manage-surveyors" element={
-              <ProtectedRoute>
-                <SurveyorManagementPage user={user} onLogout={handleLogout} />
+                <LiveTrackingPage user={user} onLogout={handleLogout} />
               </ProtectedRoute>
             } />
           </Routes>
