@@ -333,6 +333,14 @@ const groupedSurveyors = useMemo(() => {
       
       setSurveyors(mockSurveyors);
       setError('Using demo data - Backend not available');
+      
+      // Also set mock status immediately
+      const mockStatus = {
+        'SUR009': 'Online',
+        'SUR010': 'Offline',
+        'SUR011': 'Offline'
+      };
+      setStatusMap(mockStatus);
     } finally {
       setLoading(false);
     }
@@ -716,7 +724,7 @@ const fetchHistoricalRoute = useCallback(async () => {
         overflowX: 'auto'
       }}>
         {/* 🔽 Tracking Surveyor */}
-        <div style={{ minWidth: '200px', flexShrink: 0 }}>
+        <div style={{ minWidth: '200px', flexShrink: 0, position: 'relative', zIndex: 1000 }}>
           <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151', fontSize: '0.9rem' }}>
             🔽 Tracking Surveyor
           </label>
@@ -730,22 +738,24 @@ const fetchHistoricalRoute = useCallback(async () => {
               width: '100%',
               fontSize: '1rem',
               background: '#ffffff',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              position: 'relative',
+              zIndex: 1000
             }}
           >
             <option value="">-- Select a surveyor --</option>
             {surveyors
-              .filter(surveyor => statusMap[surveyor.id] === 'Online' && surveyor.id !== 'admin')
+              .filter(surveyor => surveyor.id && surveyor.id.startsWith('SUR'))
               .map(surveyor => (
                 <option key={surveyor.id} value={surveyor.id}>
-                  {surveyor.name} ({surveyor.id}) 🟢
+                  {surveyor.name} ({surveyor.id}) {statusMap[surveyor.id] === 'Online' ? '🟢' : '🔴'}
                 </option>
               ))}
           </select>
         </div>
 
         {/* 🔽 Filter by City */}
-        <div style={{ minWidth: '150px', flexShrink: 0 }}>
+        <div style={{ minWidth: '150px', flexShrink: 0, position: 'relative', zIndex: 1000 }}>
           <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151', fontSize: '0.9rem' }}>
             🔽 Filter by City
           </label>
@@ -759,7 +769,9 @@ const fetchHistoricalRoute = useCallback(async () => {
               width: '100%',
               fontSize: '1rem',
               background: '#ffffff',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              position: 'relative',
+              zIndex: 1000
             }}
           >
             <option value="">All Cities</option>
@@ -771,7 +783,7 @@ const fetchHistoricalRoute = useCallback(async () => {
         </div>
 
         {/* 🔽 Filter by Project */}
-        <div style={{ minWidth: '150px', flexShrink: 0 }}>
+        <div style={{ minWidth: '150px', flexShrink: 0, position: 'relative', zIndex: 1000 }}>
           <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151', fontSize: '0.9rem' }}>
             🔽 Filter by Project
           </label>
@@ -785,7 +797,9 @@ const fetchHistoricalRoute = useCallback(async () => {
               width: '100%',
               fontSize: '1rem',
               background: '#ffffff',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              position: 'relative',
+              zIndex: 1000
             }}
           >
             <option value="">All Projects</option>
@@ -797,7 +811,7 @@ const fetchHistoricalRoute = useCallback(async () => {
         </div>
 
         {/* 📅 From Date */}
-        <div style={{ minWidth: '180px', flexShrink: 0 }}>
+        <div style={{ minWidth: '180px', flexShrink: 0, position: 'relative', zIndex: 99999 }}>
           <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151', fontSize: '0.9rem' }}>
             📅 From Date
           </label>
@@ -807,20 +821,22 @@ const fetchHistoricalRoute = useCallback(async () => {
             showTimeSelect
             dateFormat="MMM dd, yyyy h:mm aa"
             className="date-picker"
-            popperPlacement="top"
+            popperPlacement="bottom"
+            popperClassName="datepicker-popper-override"
+            withPortal
             style={{
               width: '100%',
               padding: '0.75rem 1rem',
               borderRadius: '8px',
               border: '2px solid #e5e7eb',
               fontSize: '1rem',
-              zIndex: 220
+              zIndex: 99999
             }}
           />
         </div>
 
         {/* 📅 To Date */}
-        <div style={{ minWidth: '180px', flexShrink: 0 }}>
+        <div style={{ minWidth: '180px', flexShrink: 0, position: 'relative', zIndex: 99999 }}>
           <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151', fontSize: '0.9rem' }}>
             📅 To Date
           </label>
@@ -830,14 +846,16 @@ const fetchHistoricalRoute = useCallback(async () => {
             showTimeSelect
             dateFormat="MMM dd, yyyy h:mm aa"
             className="date-picker"
-            popperPlacement="top"
+            popperPlacement="bottom"
+            popperClassName="datepicker-popper-override"
+            withPortal
             style={{
               width: '100%',
               padding: '0.75rem 1rem',
               borderRadius: '8px',
               border: '2px solid #e5e7eb',
               fontSize: '1rem',
-              zIndex: 220
+              zIndex: 99999
             }}
           />
         </div>
@@ -848,7 +866,7 @@ const fetchHistoricalRoute = useCallback(async () => {
             onClick={startLiveTracking}
             disabled={!selectedSurveyor}
             style={{
-              background: selectedSurveyor ? 'linear-gradient(135deg, #10810, #34d399 100%)' : '#9ca3af',
+              background: selectedSurveyor ? 'linear-gradient(135deg, #10b981 0%, #34d399 100%)' : '#9ca3af',
               color: '#fff',
               border: 'none',
               borderRadius: '12px',
@@ -861,7 +879,7 @@ const fetchHistoricalRoute = useCallback(async () => {
               whiteSpace: 'nowrap'
             }}
           >
-            ⚡ Start Live Tracking
+            ⚡ Start Live Tracking {surveyors.length === 0 ? '(No Surveyors)' : selectedSurveyor ? '(Ready)' : '(Select Surveyor)'}
           </button>
 
           <button
@@ -880,7 +898,7 @@ const fetchHistoricalRoute = useCallback(async () => {
               transition: 'all 0.3s ease'
             }}
           >
-            📘 Fetch Historical
+            📘 Fetch Historical {surveyors.length === 0 ? '(No Surveyors)' : selectedSurveyor ? '(Ready)' : '(Select Surveyor)'}
           </button>
 
           <button
@@ -902,24 +920,6 @@ const fetchHistoricalRoute = useCallback(async () => {
           </button>
         </div>
 
-        {/* 🧪 Demo Indicator - Inline Text */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          marginLeft: 'auto',
-          padding: '0.5rem 1rem',
-          background: 'rgba(59,130,246,0.08)',
-          borderRadius: '8px',
-          border: '1px solid rgba(59,130,246,0.15)',
-          color: '#1d4ed8',
-          fontSize: '0.95rem',
-          fontWeight: 600
-        }}>
-          <span>🧪</span>
-          <span>Demo Mode</span>
-        </div>
-
         {/* 🔌 WebSocket Status */}
         <div style={{
           display: 'flex',
@@ -935,6 +935,23 @@ const fetchHistoricalRoute = useCallback(async () => {
         }}>
           <span>{connectionStatus === 'Connected' ? '🟢' : '🔴'}</span>
           <span>WS: {connectionStatus}</span>
+        </div>
+
+        {/* 📊 Surveyor Count Debug */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          padding: '0.5rem 1rem',
+          background: surveyors.length > 0 ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)',
+          borderRadius: '8px',
+          border: surveyors.length > 0 ? '1px solid rgba(16,185,129,0.15)' : '1px solid rgba(239,68,68,0.15)',
+          color: surveyors.length > 0 ? '#10b981' : '#dc2626',
+          fontSize: '0.95rem',
+          fontWeight: 600
+        }}>
+          <span>📊</span>
+          <span>Surveyors: {surveyors.length}</span>
         </div>
       </div>
 
@@ -964,7 +981,8 @@ const fetchHistoricalRoute = useCallback(async () => {
         borderRadius: '16px',
         overflow: 'hidden',
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-        border: '1px solid rgba(59, 130, 246, 0.1)'
+        border: '1px solid rgba(59, 130, 246, 0.1)',
+        zIndex: 1
       }}>
         {/* Map Area - Clean without floating controls */}
 

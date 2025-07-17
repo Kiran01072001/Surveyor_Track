@@ -116,6 +116,55 @@ body {
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
 }
 
+/* Date Picker Popup Z-Index Fix */
+.react-datepicker-popper {
+  z-index: 99999 !important;
+  position: relative !important;
+}
+
+.react-datepicker {
+  z-index: 99999 !important;
+  position: relative !important;
+}
+
+.react-datepicker__triangle {
+  z-index: 99999 !important;
+}
+
+.react-datepicker__header {
+  z-index: 99999 !important;
+}
+
+.react-datepicker__month-container {
+  z-index: 99999 !important;
+}
+
+/* Custom Date Picker Popper Override */
+.datepicker-popper-override {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
+.datepicker-popper-override .react-datepicker-popper {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
+.datepicker-popper-override .react-datepicker {
+  z-index: 99999 !important;
+  position: relative !important;
+}
+
+/* Select Dropdown Z-Index Fix */
+select {
+  z-index: 1000 !important;
+}
+
+/* Ensure dropdowns appear above map */
+select:focus {
+  z-index: 1001 !important;
+}
+
 /* Enhanced Card Styling */
 .card {
   background: rgba(255, 255, 255, 0.95);
@@ -123,6 +172,7 @@ body {
   box-shadow: 0 20px 40px rgba(0,0,0,0.1);
   padding: 2rem;
   border: 1px solid rgba(255,255,255,0.2);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 }
@@ -190,6 +240,7 @@ body {
 /* Glassmorphism Effects */
 .glass-panel {
   background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
