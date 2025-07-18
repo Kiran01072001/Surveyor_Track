@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.neogeo.tracking.model.LocationTrack;
 import com.neogeo.tracking.model.Surveyor;
@@ -71,6 +73,11 @@ public class LocationTrackService {
         List<LocationTrack> results = fetchLocationTracks(surveyorId, start, end);
         logResults(results);
         return results;
+    }
+
+    public Page<LocationTrack> getTrackHistoryPaged(String surveyorId, Instant start, Instant end, Pageable pageable) {
+        validateTimeRange(start, end);
+        return locationTrackRepository.findBySurveyorIdAndTimestampBetweenOrderByTimestampAsc(surveyorId, start, end, pageable);
     }
 
     private boolean isValidSurveyor(Surveyor surveyor) {

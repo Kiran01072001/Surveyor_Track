@@ -137,4 +137,26 @@ public class SurveyorController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @Operation(summary = "Get all distinct cities", 
+              description = "Retrieves a list of all distinct cities from surveyors")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved cities")
+    })
+    @GetMapping("/cities")
+    public ResponseEntity<List<String>> getAllCities() {
+        List<String> cities = surveyorService.getAllDistinctCities();
+        return ResponseEntity.ok(cities);
+    }
+
+    @Operation(summary = "Get all distinct projects", 
+              description = "Retrieves a list of all distinct project names from surveyors")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved projects")
+    })
+    @GetMapping("/projects")
+    public ResponseEntity<List<String>> getAllProjects() {
+        List<String> projects = surveyorService.getAllDistinctProjects();
+        return ResponseEntity.ok(projects);
+    }
 }

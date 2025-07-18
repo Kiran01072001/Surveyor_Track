@@ -163,4 +163,20 @@ public class SurveyorService {
         }
         return false;
     }
+
+    /**
+     * Gets all distinct cities from surveyors
+     * @return List of distinct city names
+     */
+    public List<String> getAllDistinctCities() {
+        return repository.findAllDistinctCities();
+    }
+
+    /**
+     * Gets all distinct project names from surveyors
+     * @return List of distinct project names
+     */
+    public List<String> getAllDistinctProjects() {
+        return repository.findAllDistinctProjects();
+    }
 }

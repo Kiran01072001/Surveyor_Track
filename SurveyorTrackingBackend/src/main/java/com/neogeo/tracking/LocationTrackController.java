@@ -18,6 +18,9 @@ import com.neogeo.tracking.model.LocationTrack;
 import com.neogeo.tracking.model.Surveyor;
 import com.neogeo.tracking.repository.LocationTrackRepository;
 import com.neogeo.tracking.service.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.media.*;
@@ -69,16 +72,19 @@ public class LocationTrackController {
 
     @Operation(summary = "Get location history")
     @GetMapping("/location/{surveyorId}/track")
-    public ResponseEntity<List<LocationTrack>> getTrackHistory(
+    public ResponseEntity<Page<LocationTrack>> getTrackHistory(
             @PathVariable String surveyorId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant start,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant end) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant end,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1000") int size) {
         
         if (start.isAfter(end)) {
             return ResponseEntity.badRequest().build();
         }
 
-        List<LocationTrack> tracks = locationTrackService.getTrackHistory(surveyorId, start, end);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<LocationTrack> tracks = locationTrackService.getTrackHistoryPaged(surveyorId, start, end, pageable);
         return tracks.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(tracks);
     }
 
